@@ -62,7 +62,7 @@ class HomePage extends StatelessWidget {
                 child: Card(
                   elevation: 4,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    padding: const EdgeInsets.all(16.0),
                     child: Column(
                       children: <Widget>[
                         SizedBox(
@@ -78,7 +78,7 @@ class HomePage extends StatelessWidget {
                             children: <Widget>[
                               Text(
                                 email,
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                               ),
                               Text(name),
                             ],
