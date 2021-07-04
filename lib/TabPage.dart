@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/AccountPage.dart';
 import 'package:instagram_clone/HomePage.dart';
+import 'package:instagram_clone/SearchPage.dart';
 
 class TabPage extends StatefulWidget {
   @override
@@ -9,7 +10,7 @@ class TabPage extends StatefulWidget {
 
 class _TabPageState extends State<TabPage> {
   int _selectedIndex = 0;
-  List _pages = [HomePage(), Text('page 1'), AccountPage()];
+  List _pages = [HomePage(), SearchPage(), AccountPage()];
 
   @override
   Widget build(BuildContext context) {
