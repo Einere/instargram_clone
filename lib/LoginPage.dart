@@ -11,8 +11,10 @@ class LoginPage extends StatelessWidget {
   Future<User> _handleSignIn() async {
     GoogleSignInAccount googleUser = await _googleSignIn.signIn();
     GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-    GoogleAuthCredential googleAuthCredential = GoogleAuthProvider.credential(idToken: googleAuth.idToken, accessToken: googleAuth.accessToken);
-    UserCredential userCredential = await _firebaseAuth.signInWithCredential(googleAuthCredential);
+    GoogleAuthCredential googleAuthCredential = GoogleAuthProvider.credential(
+        idToken: googleAuth.idToken, accessToken: googleAuth.accessToken);
+    UserCredential userCredential =
+        await _firebaseAuth.signInWithCredential(googleAuthCredential);
     User user = userCredential.user;
 
     return user;
@@ -21,24 +23,24 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // return _build();
-    return FutureBuilder(future: Firebase.initializeApp(), builder: (context, snapshot) {
-      return Scaffold(
-          body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text('Instagram Clone',
-                    style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold)),
-                Padding(padding: EdgeInsets.all(48)),
-                SignInButton(Buttons.Google, onPressed: () {
-
-                  _handleSignIn().then((user) {
-                    print(user);
-                  });
-                })
-              ],
-            ),
-          ));
-    });
+    return Scaffold(
+        body: Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text('Instagram Clone',
+              style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold)),
+          Padding(padding: EdgeInsets.all(48)),
+          SignInButton(Buttons.Google, onPressed: () {
+            _handleSignIn().then((user) {
+              print('user login success $user');
+            })
+            .catchError((error) {
+              print('user login failed $error');
+            });
+          })
+        ],
+      ),
+    ));
   }
 }
