@@ -1,11 +1,21 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
+import 'package:google_sign_in/google_sign_in.dart';
 
 class AccountPage extends StatefulWidget {
+  final User user;
+
+  AccountPage(this.user);
+
   @override
   _AccountPageState createState() => _AccountPageState();
 }
 
 class _AccountPageState extends State<AccountPage> {
+  final GoogleSignIn googleSignIn = GoogleSignIn();
+  String profilePicUrl;
+  String name;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,18 +24,26 @@ class _AccountPageState extends State<AccountPage> {
     );
   }
 
-  final String profilePicUrl =
-      'https://i2.wp.com/gyogamman.com/wp-content/uploads/2020/04/dog-3753706_1280_Pixabay%EB%A1%9C%EB%B6%80%ED%84%B0-%EC%9E%85%EC%88%98%EB%90%9C-monicore%EB%8B%98%EC%9D%98-%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%9E%85%EB%8B%88%EB%8B%A4..jpg?w=1280&ssl=1';
+
+  @override
+  void initState() {
+    super.initState();
+    this.profilePicUrl = widget.user.photoURL;
+    this.name = widget.user.displayName;
+  }
 
   Widget renderAppBar() {
     return AppBar(
       actions: [
-        IconButton(icon: Icon(Icons.exit_to_app), onPressed: onPressed)
+        IconButton(icon: Icon(Icons.exit_to_app), onPressed: signOut)
       ],
     );
   }
 
-  void onPressed() {}
+  void signOut() {
+    FirebaseAuth.instance.signOut();
+    googleSignIn.signOut();
+  }
 
   Widget renderBody() {
     return Padding(
@@ -77,7 +95,7 @@ class _AccountPageState extends State<AccountPage> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 4),
                 child: Text(
-                  '이름',
+                  name,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                 ),
               ),

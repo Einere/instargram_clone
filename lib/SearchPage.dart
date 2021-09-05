@@ -1,8 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'CreatePage.dart';
 
 class SearchPage extends StatefulWidget {
+  final User user;
+
+  SearchPage(this.user);
+
   @override
   _SearchPageState createState() => _SearchPageState();
 }
