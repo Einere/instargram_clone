@@ -84,7 +84,6 @@ class _CreatePageState extends State<CreatePage> {
                   child: loadedImage == null
                       ? Text('no image')
                       : Image.file(loadedImage, fit: BoxFit.cover))),
-          // child: Image.network('https://img1.daumcdn.net/thumb/R800x0/?scode=mtistory2&fname=https%3A%2F%2Ft1.daumcdn.net%2Fcfile%2Ftistory%2F27118F4259357D530B', fit: BoxFit.fitWidth))),
           TextField(
             controller: textController,
             decoration: InputDecoration(hintText: '내용을 입력하세요'),

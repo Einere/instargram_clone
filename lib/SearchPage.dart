@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:instagram_clone/DetailPage.dart';
 
 import 'CreatePage.dart';
 
@@ -59,8 +60,15 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  Widget _itemBuilder(
-      BuildContext context, int index, QueryDocumentSnapshot item) {
-    return Image.network(item.get('photoUri'));
+  Widget _itemBuilder(BuildContext context, int index,
+      QueryDocumentSnapshot item) {
+    return InkWell(
+        onTap: () {
+          Navigator.push(context, MaterialPageRoute(builder:
+              (context) {
+              return DetailPage(item);
+          }));
+        },
+        child: Image.network(item.get('photoUri')));
   }
 }
