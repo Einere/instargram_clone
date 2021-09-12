@@ -29,7 +29,7 @@ class _SearchPageState extends State<SearchPage> {
     return () {
       Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => CreatePage()));
+          MaterialPageRoute(builder: (context) => CreatePage(widget.user)));
     };
   }
 

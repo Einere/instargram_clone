@@ -1,9 +1,16 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class CreatePage extends StatefulWidget {
+  final User user;
+
+  CreatePage(this.user);
+
   @override
   _CreatePageState createState() => _CreatePageState();
 }
@@ -11,7 +18,7 @@ class CreatePage extends StatefulWidget {
 class _CreatePageState extends State<CreatePage> {
   final textController = TextEditingController();
   final ImagePicker imagePicker = ImagePicker();
-  PickedFile pickedFile;
+  XFile pickedFile;
   File loadedImage;
 
   @override
@@ -39,7 +46,32 @@ class _CreatePageState extends State<CreatePage> {
     );
   }
 
-  void post() {}
+  void post() {
+    Reference firebaseStorageRef = FirebaseStorage.instance
+        .ref()
+        .child('post')
+        .child('${DateTime.now().millisecondsSinceEpoch}.png');
+    UploadTask task = firebaseStorageRef.putFile(
+        loadedImage, SettableMetadata(contentType: 'image/png'));
+    task.whenComplete(() => null).then((value) {
+      Future<String> downloadUrlFuture = value.ref.getDownloadURL();
+      downloadUrlFuture.then((uri) {
+        DocumentReference<Map<String, dynamic>> docRef =
+            FirebaseFirestore.instance.collection('post').doc();
+        docRef.set({
+          'id': docRef.id,
+          'photoUri': uri.toString(),
+          'content': textController.text,
+          'authorEmail': widget.user.email,
+          'authorName': widget.user.displayName,
+          'authorPhotoUrl' : widget.user.photoURL,
+        })
+        .then((value) {
+          Navigator.pop(context);
+        });
+      });
+    });
+  }
 
   Widget _renderBody() {
     return SingleChildScrollView(
@@ -63,7 +95,7 @@ class _CreatePageState extends State<CreatePage> {
   }
 
   Future<void> loadImage() async {
-    pickedFile = await imagePicker.getImage(source: ImageSource.gallery);
+    pickedFile = await imagePicker.pickImage(source: ImageSource.gallery);
 
     setState(() {
       loadedImage = File(pickedFile.path);
