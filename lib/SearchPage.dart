@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -27,30 +28,39 @@ class _SearchPageState extends State<SearchPage> {
 
   Function goToCreatePage(context) {
     return () {
-      Navigator.push(
-          context,
+      Navigator.push(context,
           MaterialPageRoute(builder: (context) => CreatePage(widget.user)));
     };
   }
 
   Widget _buildBody() {
-    return GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          childAspectRatio: 1,
-          mainAxisSpacing: 1,
-          crossAxisSpacing: 1,
+    return StreamBuilder(
+      stream: FirebaseFirestore.instance.collection('post').snapshots(),
+      builder: (BuildContext context,
+          AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+        if (!snapshot.hasData) {
+          return Center(child: CircularProgressIndicator());
+        }
+        List items = snapshot.data.docs ?? [];
 
-        ),
-        itemBuilder: _itemBuilder,
-        itemCount: 5,
+        return GridView.builder(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            childAspectRatio: 1,
+            mainAxisSpacing: 1,
+            crossAxisSpacing: 1,
+          ),
+          itemBuilder: (context, index) {
+            return _itemBuilder(context, index, items[index]);
+          },
+          itemCount: items.length,
+        );
+      },
     );
   }
 
-  Widget _itemBuilder(BuildContext context, int index) {
-    return Image.network(
-      'https://images.mypetlife.co.kr/content/uploads/2018/07/09160052/puppy-1189067_1280.jpg',
-      fit: BoxFit.cover
-    );
+  Widget _itemBuilder(
+      BuildContext context, int index, QueryDocumentSnapshot item) {
+    return Image.network(item.get('photoUri'));
   }
 }
