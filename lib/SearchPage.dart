@@ -60,15 +60,27 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  Widget _itemBuilder(BuildContext context, int index,
-      QueryDocumentSnapshot item) {
-    return InkWell(
+  Widget _itemBuilder(BuildContext context, int index, QueryDocumentSnapshot item) {
+    return Hero(
+      tag: item.get('photoUri'),
+      child: Material(
+        child: InkWell(
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder:
+                  (context) {
+                  return DetailPage(item);
+              }));
+            },
+            child: Image.network(item.get('photoUri'))),
+      ),
+    );
+    /*return InkWell(
         onTap: () {
           Navigator.push(context, MaterialPageRoute(builder:
               (context) {
-              return DetailPage(item);
+            return DetailPage(item);
           }));
         },
-        child: Image.network(item.get('photoUri')));
+        child: Image.network(item.get('photoUri')));*/
   }
 }

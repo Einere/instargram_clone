@@ -49,7 +49,8 @@ class DetailPage extends StatelessWidget {
           AspectRatio(
               aspectRatio: 1 / 1,
               child:
-                  Image.network(snapshot.get('photoUri'), fit: BoxFit.cover)),
+                  Hero(tag: snapshot.get('photoUri'),
+                  child: Image.network(snapshot.get('photoUri'), fit: BoxFit.cover))),
           Padding(
             padding: EdgeInsets.all(16),
             child: Text(snapshot.get('content')),
