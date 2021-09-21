@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
 import 'package:google_sign_in/google_sign_in.dart';
@@ -15,6 +16,8 @@ class _AccountPageState extends State<AccountPage> {
   final GoogleSignIn googleSignIn = GoogleSignIn();
   String profilePicUrl;
   String name;
+  String email;
+  int postNumber = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -24,19 +27,29 @@ class _AccountPageState extends State<AccountPage> {
     );
   }
 
-
   @override
   void initState() {
     super.initState();
     this.profilePicUrl = widget.user.photoURL;
     this.name = widget.user.displayName;
+    this.email = widget.user.email;
+
+    FirebaseFirestore.instance
+        .collection('post')
+        .where('authorEmail', isEqualTo: email)
+        .get()
+        .then((querySnapshot) {
+      List myDocs = querySnapshot.docs;
+
+      setState(() {
+        this.postNumber = myDocs.length;
+      });
+    });
   }
 
   Widget renderAppBar() {
     return AppBar(
-      actions: [
-        IconButton(icon: Icon(Icons.exit_to_app), onPressed: signOut)
-      ],
+      actions: [IconButton(icon: Icon(Icons.exit_to_app), onPressed: signOut)],
     );
   }
 
@@ -78,7 +91,7 @@ class _AccountPageState extends State<AccountPage> {
                               child: FloatingActionButton(
                                   onPressed: () {},
                                   backgroundColor: Colors.white,
-                                  child: Icon(Icons.add ))),
+                                  child: Icon(Icons.add))),
                           SizedBox(
                               width: 25,
                               height: 25,
@@ -101,7 +114,7 @@ class _AccountPageState extends State<AccountPage> {
               ),
             ],
           ),
-          AlignedCenterText('0\n게시물'),
+          AlignedCenterText('$postNumber\n게시물'),
           AlignedCenterText('1\n팔로워'),
           AlignedCenterText('1\n팔로잉')
         ],
